@@ -1,0 +1,46 @@
+#!/usr/bin/php
+<?php
+// Na začiatku je potrebné nainštalovať a pripojiť knižnicu xmlseclibs.
+// Môžete to urobiť cez Composer alebo manuálne pripojiť knižnicu.
+
+// Importujte potrebné triedy
+require_once('/home/palo/okte/vendor/autoload.php');
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
+
+// Vytvorte novú inštanciu XMLSecurityDSig
+$signature = new XMLSecurityDSig();
+
+// Nastavte algoritmus kanonikalizácie
+$signature->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
+
+// Nastavte algoritmus podpisu
+$signature->addReference(
+    // URI identifikátor odkazujúci na podpísanú časť dokumentu
+    '#id-3',
+    // Zvolený algoritmus podpisu
+    [
+        'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+        'http://www.w3.org/2001/10/xml-exc-c14n#',
+    ],
+    // Zvolený algoritmus hašovania
+    ['http://www.w3.org/2000/09/xmldsig#sha1']
+);
+
+// Vytvorte nový kľúč pre podpis
+$privateKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA1, ['type' => 'private']);
+$privateKey->loadKey('privatny_kluc.pem', true); // Nahraďte 'privatny_kluc.pem' cestou k vášmu súkromnému kľúču
+
+// Nastavte súkromný kľúč pre podpisovanie
+$signature->setPrivateKey($privateKey);
+
+// Podpíšte XML dokument
+$signature->sign();
+
+// Získajte podpísaný XML dokument
+$signedXML = $signature->getSignedXML();
+
+// Vypíšte podpísaný XML dokument
+echo $signedXML;
+?>
+
