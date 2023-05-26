@@ -4,7 +4,7 @@
 // Môžete to urobiť cez Composer alebo manuálne pripojiť knižnicu.
 
 // Importujte potrebné triedy
-require_once('/home/palo/okte/vendor/autoload.php');
+require_once('/home/pc/okte/vendor/autoload.php');
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
